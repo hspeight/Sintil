@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:threefiftyprefs="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        android:title="Event Title"
+        android:summary=""
+        android:defaultValue="Enter a title for the event"
+
+        android:key="evtitle"/>
+
+    <EditTextPreference
+        android:title="Optional Info"
+        android:summary=""
+        android:defaultValue="Enter optional info"
+        android:key="evdesc"/>
+
+    <ListPreference
+        android:title="Type"
+        android:summary="%s"
+        android:entries="@array/upDown"
+        android:entryValues="@array/upDownValues"
+        android:defaultValue="0"
+        android:key="direction" />
+
+    <uk.co.sintildate.sintil.TimePreferenceCustom
+        android:key="date_and_time"
+        android:defaultValue="0"
+        android:summary="Target date &amp; time"
+        android:dialogLayout="@layout/time_preference"
+        android:title="Date &amp; Time"/>
+
+</PreferenceScreen>

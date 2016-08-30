@@ -1,0 +1,12 @@
+adb -s emulator-5554 shell
+
+sqlite3 /data/data/uk.co.sintildate.sintil/databases/events.db "select * from events"
+sqlite3 /data/data/uk.co.sintildate.sintil/databases/events.db "select * from events where evstatus = 'A'"
+
+
+sqlite3 /data/data/uk.co.sintildate.sintil/databases/events.db "PRAGMA table_info(events);"
+
+cd /data/data/uk.co.sintildate.sintil/shared_prefs
+
+In Windows
+C:\Users\hector\AppData\Local\Android\sdk\platform-tools

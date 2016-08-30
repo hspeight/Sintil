@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.colindodd.gradientlayout.GradientLinearLayout xmlns:gl="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_weight="1.0"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:id="@+id/linLayoutCounterBG">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal|left"
+        android:id="@+id/linLayoutCouterTitle"
+        android:layout_weight=".2"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+            android:text="Large Text"
+            android:id="@+id/textEvTitle"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:maxLines="2"
+            android:gravity="center_horizontal"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".3"
+        android:id="@+id/linLayoutCounterOpt"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:text="Med Text"
+            android:id="@+id/textOptionalInfo"
+
+            android:gravity="center_vertical|center_horizontal"
+
+            android:textStyle="bold|italic"
+            android:scrollHorizontally="true"
+            android:maxLines="3"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/linLayoutImage"
+        android:layout_weight=".7"
+        android:gravity="center_vertical|center_horizontal">
+        <com.makeramen.roundedimageview.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/imageView"
+
+            app:riv_corner_radius="30dip"
+            app:riv_border_width="2dip"
+            app:riv_border_color="#333333"
+            app:riv_oval="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".3"
+        android:id="@+id/linLayoutTemp">
+        <include layout="@layout/content_timer_counter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:baselineAligned="false"
+        android:layout_weight=".08"
+        android:id="@+id/linLayoutFutureText"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginBottom="3dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Future Text"
+            android:id="@+id/textViewFuture"
+            android:textStyle="bold"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+    </LinearLayout>
+
+
+</net.colindodd.gradientlayout.GradientLinearLayout>

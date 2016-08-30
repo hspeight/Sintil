@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="App Theme"
+        android:key="app_theme">
+
+        <PreferenceScreen
+            android:title="Events Theme"
+            android:summary="Select the app's theme">
+            <intent android:action="android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS"/>
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Misc"
+        android:key="misc">
+    </PreferenceCategory>
+
+</PreferenceScreen>
