@@ -46,15 +46,15 @@ public class NewEventFragment extends Fragment {
         txtEventTitle = view.findViewById(R.id.txtEventTitle);
         txtEventTitle = view.findViewById(R.id.txtEventDescription);
 
-        Events event = new Events();
+        //Events event = new Events();
 
-        event.set_eventname("Test Title");
-        event.set_eventinfo("Test Description");
-        event.set_evstatus("A");
-        event.set_evtype("R");
-        event.set_evtime(1471716931);
+        //event.set_eventname("Test Title");
+        //event.set_eventinfo("Test Description");
+        //event.set_evstatus("A");
+        //event.set_evtype("R");
+        //event.set_evtime(1471716931);
 
-        dbHandler.addEvent(event);
+        //dbHandler.addEvent(event);
 
         return  view;
     }

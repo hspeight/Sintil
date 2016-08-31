@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-//import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import net.colindodd.gradientlayout.GradientLinearLayout;
@@ -208,5 +207,14 @@ public class EventCounterFragment extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         // start ticker
+    }
+
+    public void DispNextPage(View v) {
+        Toast.makeText(EventCounterFragment.this, "Next pressed", Toast.LENGTH_SHORT).show();
+
+    }
+    public void DispPrevPage(View v) {
+        Toast.makeText(EventCounterFragment.this, "Prev pressed", Toast.LENGTH_SHORT).show();
+
     }
 }

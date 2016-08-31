@@ -57,12 +57,20 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/linLayoutImage"
         android:layout_weight=".7"
         android:gravity="center_vertical|center_horizontal">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/pageLeftImgBtn"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_navigation_chevron_left"
+            android:layout_weight=".15"
+            android:onClick="DispPrevPage" />
         <com.makeramen.roundedimageview.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/imageView"
@@ -71,9 +79,19 @@
             app:riv_border_width="2dip"
             app:riv_border_color="#333333"
             app:riv_oval="true"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight=".7"
             android:padding="10dp"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/pageRightImgBtn"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_navigation_chevron_right"
+            android:layout_weight=".15"
+            android:onClick="DispNextPage" />
     </LinearLayout>
 
 
