@@ -32,7 +32,7 @@ public class EventCounterFragment extends FragmentActivity {
     public static Events[] eventArray;
     private int mTime;
     private int mDirection;
-    boolean ok_to_start, timer_has_started = false;
+    boolean ok_to_start, timer_has_started;
     Resources res;
    // long currentTime;
     TextView textSecs;
@@ -67,60 +67,8 @@ public class EventCounterFragment extends FragmentActivity {
 
         dbHandler = new MyDBHandler(this, null, null, 1);
         res = getResources();
-        mTime = HSFrag.eventRecord.get(index).get_evtime();
-        mDirection = HSFrag.eventRecord.get(index).get_direction();
-        //mDirection = HSFrag.eventRecord.get(index).get_direction();
-        //mUsedayyear = HSFrag.eventRecord.get(index).get_dayyears();
-        //final long timeDiff = (System.currentTimeMillis() / 1000) - mTime;
 
-        //if ((timeDiff < 0) && (mDirection == 0)) { // Count up starting in future
-        //    ((TextView) rootView.findViewById(R.id.textViewFuture)).setText(sdf.format((long) mTime * 1000));
-        ((TextView) findViewById(R.id.textEvTitle)).setText(HSFrag.eventRecord.get(index).get_eventname());
-        ((TextView) findViewById(R.id.textOptionalInfo)).setText(HSFrag.eventRecord.get(index).get_eventinfo());
-        ((TextView) findViewById(R.id.textViewFuture)).setText(String.valueOf(HSFrag.eventRecord.get(index).get_id()));
-        final long currentTime = System.currentTimeMillis() / 1000;
-        //final int timeDiff = (int) currentTime - mTime;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", java.util.Locale.getDefault());
-        textDays = (TextView) findViewById(R.id.textDays);
-        textYears = (TextView) findViewById(R.id.textYears);
-        textSecs = (TextView) findViewById(R.id.textSecs);
-        textMins = (TextView) findViewById(R.id.textMins);
-        textHour = (TextView) findViewById(R.id.textHour);
-        linLayTimer_counter = (LinearLayout) findViewById(R.id.linLayoutTimer);
-        ok_to_start = true;
-        //if(HSFrag.eventRecord.get(index).get_paused() == 1) {
-        if ((HSFrag.eventRecord.get(index).get_direction() == 1 && (HSFrag.eventRecord.get(index).get_evtime() < currentTime)) ||
-                (HSFrag.eventRecord.get(index).get_direction() == 0 && (HSFrag.eventRecord.get(index).get_evtime() > currentTime))) {
-            Log.d(DEBUG_TAG, "count = " + linLayTimer_counter.getChildCount());
-            linLayTimer_counter.removeAllViews();
-            TextView tv = new TextView(this);
-            tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            if (HSFrag.eventRecord.get(index).get_evtime() < currentTime) {
-                tv.setText(String.format(res.getString(R.string.countdown_ended), "\n" + sdf.format((long) HSFrag.eventRecord.get(index).get_evtime() * 1000)));
-                ok_to_start = false;
-            } else {
-                tv.setText(String.format(res.getString(R.string.future_countup), "\n" + sdf.format((long) HSFrag.eventRecord.get(index).get_evtime() * 1000)));
-            }
-            tv.setTextSize(18);
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            linLayTimer_counter.addView(tv);
-
-        //} else {
-        //    ok_to_start = true;
-
-            //mTime = HSFrag.eventRecord.get(index).get_evtime();
-            //mUsedayyear = HSFrag.eventRecord.get(index).get_dayyears();
-        }
-
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        Picasso.with(this)
-                .load(R.drawable.bass)
-                .into(imageView);
-
-        if (ok_to_start) {
-            start_timer();
-        }
-
+        setup_counter(index);
         //final GradientLinearLayout layout = (GradientLinearLayout) rootView.findViewById(R.id.linLayoutCounterBG);
 
         //return rootView;
@@ -210,11 +158,83 @@ public class EventCounterFragment extends FragmentActivity {
     }
 
     public void DispNextPage(View v) {
-        Toast.makeText(EventCounterFragment.this, "Next pressed", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(EventCounterFragment.this, "Next pressed", Toast.LENGTH_SHORT).show();
+        //Log.d(DEBUG_TAG,"index=" + index + "/size=" + HSFrag.eventRecord.size());
+        //++index;
+        if (index < HSFrag.eventRecord.size() -1) {
+            index++;
+            //Log.d(DEBUG_TAG,"index before setup=" + index);
+            setup_counter(index);
+        }
 
     }
     public void DispPrevPage(View v) {
-        Toast.makeText(EventCounterFragment.this, "Prev pressed", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(EventCounterFragment.this, "Prev pressed", Toast.LENGTH_SHORT).show();
+        if (index > 0) {
+            index-- ;
+            //Log.d(DEBUG_TAG,"index before setup=" + index);
+            setup_counter(index);
+        }
+    }
+
+    public void setup_counter(int index) {
+        //Log.d(DEBUG_TAG,"index+++++++++++++++++++++++++=" + index);
+        if (timer_has_started)
+            cdt.cancel();
+        timer_has_started = false;
+        mTime = HSFrag.eventRecord.get(index).get_evtime();
+        mDirection = HSFrag.eventRecord.get(index).get_direction();
+        //mDirection = HSFrag.eventRecord.get(index).get_direction();
+        //mUsedayyear = HSFrag.eventRecord.get(index).get_dayyears();
+        //final long timeDiff = (System.currentTimeMillis() / 1000) - mTime;
+
+        //if ((timeDiff < 0) && (mDirection == 0)) { // Count up starting in future
+        //    ((TextView) rootView.findViewById(R.id.textViewFuture)).setText(sdf.format((long) mTime * 1000));
+        ((TextView) findViewById(R.id.textEvTitle)).setText(HSFrag.eventRecord.get(index).get_eventname());
+        ((TextView) findViewById(R.id.textOptionalInfo)).setText(HSFrag.eventRecord.get(index).get_eventinfo());
+        ((TextView) findViewById(R.id.textViewFuture)).setText(String.valueOf(HSFrag.eventRecord.get(index).get_id()));
+        final long currentTime = System.currentTimeMillis() / 1000;
+        //final int timeDiff = (int) currentTime - mTime;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", java.util.Locale.getDefault());
+        textDays = (TextView) findViewById(R.id.textDays);
+        textYears = (TextView) findViewById(R.id.textYears);
+        textSecs = (TextView) findViewById(R.id.textSecs);
+        textMins = (TextView) findViewById(R.id.textMins);
+        textHour = (TextView) findViewById(R.id.textHour);
+        linLayTimer_counter = (LinearLayout) findViewById(R.id.linLayoutTimer);
+        ok_to_start = true;
+        //if(HSFrag.eventRecord.get(index).get_paused() == 1) {
+        if ((HSFrag.eventRecord.get(index).get_direction() == 1 && (HSFrag.eventRecord.get(index).get_evtime() < currentTime)) ||
+                (HSFrag.eventRecord.get(index).get_direction() == 0 && (HSFrag.eventRecord.get(index).get_evtime() > currentTime))) {
+            Log.d(DEBUG_TAG, "count = " + linLayTimer_counter.getChildCount());
+            linLayTimer_counter.removeAllViews();
+            TextView tv = new TextView(this);
+            tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            if (HSFrag.eventRecord.get(index).get_evtime() < currentTime) {
+                tv.setText(String.format(res.getString(R.string.countdown_ended), "\n" + sdf.format((long) HSFrag.eventRecord.get(index).get_evtime() * 1000)));
+                ok_to_start = false;
+            } else {
+                tv.setText(String.format(res.getString(R.string.future_countup), "\n" + sdf.format((long) HSFrag.eventRecord.get(index).get_evtime() * 1000)));
+            }
+            tv.setTextSize(18);
+            tv.setGravity(Gravity.CENTER_HORIZONTAL);
+            linLayTimer_counter.addView(tv);
+
+            //} else {
+            //    ok_to_start = true;
+
+            //mTime = HSFrag.eventRecord.get(index).get_evtime();
+            //mUsedayyear = HSFrag.eventRecord.get(index).get_dayyears();
+        }
+
+        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        Picasso.with(this)
+                .load(R.drawable.bass)
+                .into(imageView);
+
+        if (ok_to_start) {
+            start_timer();
+        }
 
     }
 }
