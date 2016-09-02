@@ -1,44 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFCDD2"
-    android:orientation="vertical"
     android:padding="16dp">
 
+    <RadioGroup
+        android:id="@+id/radioDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation='horizontal'
+        android:layout_below="@+id/view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Count Down"
+            android:theme="@style/MyRadioButton"
+            android:id="@+id/radioButtonCountDown"
+            android:checked="true"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Count Up"
+            android:id="@+id/radioButtonCountUp"
+            android:theme="@style/MyRadioButton"
+            android:checked="false"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:layout_marginLeft="74dp"
+            android:layout_marginStart="74dp" />
+    </RadioGroup>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Target Date"
+        android:id="@+id/btn_date"
+        android:layout_below="@+id/radioDirection"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
-        android:layout_width="fill_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="Event title"
-        android:inputType="textPersonName"
-        android:id="@+id/txtEventTitle" />
+        android:id="@+id/in_date"
+        android:layout_alignBottom="@+id/btn_date"
+        android:layout_toRightOf="@+id/btn_date"
+        android:layout_toEndOf="@+id/btn_date" />
 
     <EditText
-        android:layout_width="fill_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:gravity="top"
-        android:hint="Event description"
-        android:fitsSystemWindows="true"
-        android:breakStrategy="balanced"
-        android:inputType="textMultiLine"
-        android:singleLine="false"
-        android:padding="5dp"
-        android:id="@+id/txtEventDescription"
-        android:maxLines="3" />
+        android:id="@+id/in_time"
+        android:layout_alignBottom="@+id/btn_time"
+        android:layout_toRightOf="@+id/btn_time"
+        android:layout_toEndOf="@+id/btn_time" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/colorPrimaryDark"
-        android:elevation="4dp"
-        android:paddingLeft="70dp"
-        android:paddingRight="70dp"
-        android:text="Submit"
-        android:textColor="#fff" />
-</LinearLayout>
+        android:text="Target Time"
+        android:id="@+id/btn_time"
+        android:layout_below="@+id/btn_date"
+        android:layout_toLeftOf="@+id/in_date"
+        android:layout_toStartOf="@+id/in_date" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:id="@+id/view2">
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/event_title"
+            android:id="@+id/txtEventTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view"
+        android:layout_below="@+id/view2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/event_description"
+            android:inputType="textMultiLine"
+            android:id="@+id/txtEventDescription"
+            android:maxLines="3"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </android.support.design.widget.TextInputLayout>
+
+</RelativeLayout>

@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Add the fragment to the 'fragment_container' FrameLayout
                 //getFragmentManager().popBackStack();
-                getFragmentManager().beginTransaction()
+                getSupportFragmentManager().beginTransaction()
                         //.add(R.id.fragment_container, firstFragment).addToBackStack("fragBack").commit();
                 .add(R.id.fragment_container, firstFragment).commit();
             }

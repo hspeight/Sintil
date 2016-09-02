@@ -1,11 +1,15 @@
 package uk.co.sintildate.sintil;
 
-import android.app.Fragment;
+//import android.app.Fragment;
 import android.content.Intent;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,10 +56,12 @@ public class HSFrag extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        view = inflater.inflate(R.layout.fragment_h2, container, false);
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_h2, container, false);
 
-        view =  inflater.inflate(R.layout.fragment_h2, container, false);
+       // view =  inflater.inflate(R.layout.fragment_h2, container, false);
 
         dbHandler = new MyDBHandler(getActivity(), null, null, 1);
 
@@ -94,9 +100,14 @@ public class HSFrag extends Fragment {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
                 //fab.setVisibility(View.INVISIBLE);
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new NewEventFragment()).addToBackStack("fragBack")
-                        .commit();
+                //getFragmentManager().beginTransaction()
+                //        .replace(R.id.fragment_container, new NewEventDialogFragment()).addToBackStack("fragBack")
+                //        .commit();
+                Intent intent = new Intent(getActivity(), NewEventActivity.class);
+                startActivity(intent);
+               // FragmentManager fm = getActivity().getSupportFragmentManager();
+               // NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
+               // newEventDialogFragment.show(fm, "fragment_new_event");
             }
         });
 
@@ -252,7 +263,7 @@ public class HSFrag extends Fragment {
         startActivity(firsttime);
         //return true;
     }
-
+/*
     public boolean setupDialog(String message, String btnPos, String btnNeg) {
         //
         EventDialog eventDialog = new EventDialog();
@@ -269,6 +280,7 @@ public class HSFrag extends Fragment {
 
         return true;
     }
+    */
 /*
     @Override
     public void onDataPass(String data) {
@@ -327,8 +339,5 @@ public class HSFrag extends Fragment {
 
     }
 */
-    public void refreshList() {
-        Toast.makeText(getActivity(), "refreshing that there list" , Toast.LENGTH_SHORT).show();
-    }
 
 }

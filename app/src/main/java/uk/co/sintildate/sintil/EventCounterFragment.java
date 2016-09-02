@@ -76,7 +76,6 @@ public class EventCounterFragment extends FragmentActivity {
 
     public void start_timer() {
         //long millis = mTime;
-        //millis *= 1000;
         Log.d(DEBUG_TAG,"starting");
         long td = System.currentTimeMillis() / 1000;
         final long timeDiff = td - mTime ;
