@@ -30,13 +30,22 @@
     <string name="display_date">%1$02d-%2$02d-%3$d</string>
     <string name="display_time">%1$02d:%2$02d</string>
 
+    <string name="text_save">Save</string>
+    <string name="text_cancel">X</string>
 
-    <string name="target_date">Target Date</string>
-    <string name="target_time">Target Time</string>
+
     <string name="start_date">Start Date</string>
     <string name="start_time">Start Time</string>
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="edt_date">Start Date or Target Date</string>
+    <string name="edt_time">Start Time or Target Time</string>
+
+    <string name="count_up_text">Summary: Count up from %1$s %2$s</string>
+    <string name="count_down_text">Summary: Count down to %1$s %2$s</string>
+
 
 </resources>

@@ -104,6 +104,7 @@ public class HSFrag extends Fragment {
                 //        .replace(R.id.fragment_container, new NewEventDialogFragment()).addToBackStack("fragBack")
                 //        .commit();
                 Intent intent = new Intent(getActivity(), NewEventActivity.class);
+                //Intent intent = new Intent(getActivity(), Main2Activity.class);
                 startActivity(intent);
                // FragmentManager fm = getActivity().getSupportFragmentManager();
                // NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();

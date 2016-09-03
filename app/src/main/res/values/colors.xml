@@ -9,5 +9,7 @@
     <color name="Crimson">#DC143C</color>
     <color name="ripple">#F06292</color>
     <color name="primary_pressed">#C2185B</color>
+    <color name="text_primary">#D9FFFFFF</color>
+    <color name="text_secondary">#D9000000</color>
 
 </resources>
