@@ -2,10 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/action_settings"
         app:showAsAction="always"
-        android:icon="@drawable/ic_chevron_left_white_48dp"
-        android:title="Refresh"/>
+        android:icon="@drawable/ic_action_settings"
+        android:title="Settings"/>
 
 
 </menu>

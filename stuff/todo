@@ -1,1 +1,4 @@
 update drawables with correct icon sizes
+preserve activity on rotation
+chose image
+backup & restore (could be used to transfer events to pro?)

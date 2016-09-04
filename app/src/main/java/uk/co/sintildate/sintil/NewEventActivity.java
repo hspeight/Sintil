@@ -1,25 +1,18 @@
 package uk.co.sintildate.sintil;
 
-import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -30,18 +23,24 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class NewEventActivity extends AppCompatActivity {
 
     Button btnDatePicker, btnTimePicker;
-    EditText txtDate, txtTime;
+    EditText txtDate, txtTime, txtTitle, txtDesc;
     TextView txtSummary;
-    private int mYear, mMonth, mDay, mHour, mMinute, direction;
+    private int mYear, mMonth, mDay, mHour, mMinute, direction, epoch;
     Resources res;
     DateValidator dateValidator;
     String DEBUG_TAG = "NEA";
     private Toolbar toolbar;
+    TextInputLayout tilDate, tilTitle;
+    boolean formIsValid;
+    MyDBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +48,22 @@ public class NewEventActivity extends AppCompatActivity {
 
         setContentView(R.layout.fragment_new_event);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar = (Toolbar) findViewById(R.id.toolbar); // Attaching the layout to the toolbar object
         setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         dateValidator = new DateValidator();
         //btnDatePicker=(Button)findViewById(R.id.btn_date);
         //btnTimePicker=(Button)findViewById(R.id.btn_time);
-        txtDate=(EditText)findViewById(R.id.in_date);
-        txtTime=(EditText)findViewById(R.id.in_time);
-        txtSummary=(TextView)findViewById(R.id.summary);
+        txtTitle = (EditText) findViewById(R.id.txtEventTitle);
+        txtDesc = (EditText) findViewById(R.id.txtEventDescription);
+        txtDate = (EditText) findViewById(R.id.in_date);
+        txtTime = (EditText) findViewById(R.id.in_time);
+        txtSummary = (TextView) findViewById(R.id.summary);
+        tilDate = (TextInputLayout) findViewById(R.id.tilDate);
+        tilTitle = (TextInputLayout) findViewById(R.id.tilTitle);
+        //tilDate.setErrorEnabled(true);
 
 //        btnDatePicker.setOnClickListener(this);
 //        btnTimePicker.setOnClickListener(this);
@@ -119,6 +125,7 @@ public class NewEventActivity extends AppCompatActivity {
 
         RadioGroup cd = (RadioGroup) findViewById(R.id.radioDirection);
         final RadioButton countDown = (RadioButton) findViewById(R.id.radioButtonCountDown);
+        direction = countDown.isChecked() ? 1 : 0; // convert direction button to int
         cd.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 direction = countDown.isChecked() ? 1 : 0; // convert direction button to int
@@ -176,11 +183,17 @@ public class NewEventActivity extends AppCompatActivity {
     }
 
     public void do_time(View v) {
-        // Get Current Time
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
 
+        String mTimeIn = txtTime.getText().toString();
+        final Calendar cal = Calendar.getInstance();
+        if(mTimeIn.matches("")) { // field is blank
+            // Get Current Time
+            mHour = cal.get(Calendar.HOUR_OF_DAY);
+            mMinute = cal.get(Calendar.MINUTE);
+        } else {
+            mHour = Integer.parseInt(mTimeIn.split(":")[0]);
+            mMinute = Integer.parseInt(mTimeIn.split(":")[1]);
+        }
         // Launch Time Picker Dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
@@ -268,11 +281,79 @@ public class NewEventActivity extends AppCompatActivity {
     }
 */
 
-
-
     public void save_clicked (View v) {
-        Toast.makeText(this, "OKAY HAS BEEN CLICKED ", Toast.LENGTH_LONG).show();
 
+        formIsValid = true;
+        String value = txtTime.getText().toString();
+        if (TextUtils.isEmpty(value)) {
+            final Calendar c = Calendar.getInstance();
+            //txtTime.setText(c.get(Calendar.HOUR_OF_DAY) + ":" +  c.get(Calendar.MINUTE)); // only if no time is entered
+            txtTime.setText(String.format(res.getString(R.string.display_time), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE)));
+        }
+
+       // }
+        //Log.d(DEBUG_TAG, ">> in");
+        epoch = 0;
+        //Log.d(DEBUG_TAG, ">> " + txtDate.getText().toString() + txtTime.getText().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm", java.util.Locale.getDefault());
+        //String dateInString = "03-09-2014 21:17";
+        try {
+            Date mDate = sdf.parse(txtDate.getText().toString() + " " + txtTime.getText().toString());
+            epoch = (int)(mDate.getTime() / 1000);
+            //Log.d(DEBUG_TAG, ">> " + txtDate.getText().toString() +"/" + epoch);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        boolean valid_date = validate_date_and_time(epoch);
+        if (valid_date) {
+            tilDate.setError(null);
+            //Toast.makeText(this, "Good date ", Toast.LENGTH_LONG).show();
+        } else {
+            formIsValid = false;
+            tilDate.setError("Cannot count down to a past date"); // need to set a string res for this
+        }
+
+        if (formIsValid) {
+            if (TextUtils.isEmpty(txtTitle.getText().toString())) {
+                formIsValid = false;
+                tilTitle.setError("Please enter a title for the event");
+            } else {
+                tilTitle.setError(null);
+            }
+        }
+
+        if (formIsValid) {
+            //Toast.makeText(this, "Form is good", Toast.LENGTH_LONG).show();
+            add_event();
+            finish(); // need to check result was good before finish
+        }
+
+        //Toast.makeText(this, "OKAY HAS BEEN CLICKED ", Toast.LENGTH_LONG).show();
+    }
+
+    public void add_event() {
+
+        dbHandler = new MyDBHandler(this, null, null, 1);
+
+        Events myEvent = new Events();
+
+        myEvent.set_eventname(txtTitle.getText().toString());
+        myEvent.set_eventinfo(txtDesc.getText().toString());
+        myEvent.set_evtime(epoch);
+        myEvent.set_direction(direction);
+        myEvent.set_evtype("R");
+        myEvent.set_evstatus("A");
+        myEvent.set_timeunits("3"); // needs sorting
+
+        dbHandler.addEvent(myEvent);
+    }
+
+    public boolean validate_date_and_time(int dtIn) {
+        //dtIn = 1472933854;
+        //if (direction == 1 && dtIn > currentDate)
+        //Log.d(DEBUG_TAG,direction + "/" + dtIn + "/" + System.currentTimeMillis() / 1000);
+        return ((direction == 1 && dtIn > System.currentTimeMillis() / 1000) || direction == 0);
     }
 
     public void cancel_clicked (View v) {

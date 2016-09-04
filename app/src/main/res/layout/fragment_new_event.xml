@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -70,21 +71,23 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="false"
-        android:id="@+id/view2">
+        android:id="@+id/tilTitle">
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/event_title"
             android:id="@+id/txtEventTitle"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:textColor="@android:color/primary_text_light"
+            />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view"
-        android:layout_below="@+id/view2"
+        android:layout_below="@+id/tilTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
         <EditText
@@ -95,7 +98,9 @@
             android:id="@+id/txtEventDescription"
             android:maxLines="3"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:textColor="@android:color/primary_text_light"
+            />
     </android.support.design.widget.TextInputLayout>
 
 
@@ -130,12 +135,10 @@
             android:layout_marginStart="74dp" />
     </RadioGroup>
 
-
-
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/view3"
+        android:id="@+id/tilDate"
         android:layout_below="@+id/radioDirection"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -153,8 +156,8 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/view4"
-        android:layout_below="@+id/view3"
+        android:id="@+id/tilTime"
+        android:layout_below="@+id/tilDate"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
         <EditText
@@ -172,7 +175,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/summary"
-        android:layout_below="@+id/view4"
+        android:layout_below="@+id/tilTime"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textStyle="italic" />
