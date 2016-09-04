@@ -7,9 +7,6 @@ import java.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +65,8 @@ public class HSFrag extends Fragment {
         PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, false);
         // for explanation see http://developer.android.com/guide/topics/ui/settings.html#Fragment
 
+        setup_list();
+        /*
         setGroupParents();
 
         listAdapter = new ExpandableListAdapterHS(getActivity(), listDataHeader, listDataSubHeader, listDataChild);
@@ -89,7 +88,7 @@ public class HSFrag extends Fragment {
                 previousItem = groupPosition;
             }
         });
-
+        */
         linLayout  = view.findViewById(R.id.linLayoutMainBG);
 
         final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -116,18 +115,31 @@ public class HSFrag extends Fragment {
 
     }
 
-    /*
-    public void editIconClicked (View v){
+    public void setup_list() {
 
-        int eyd = eventArray[(int)v.getTag()].get_id();
-        //Intent intent = new Intent(getBaseContext(), EventEditor.class);
-        Intent intent = new Intent(this, CounterSettingsActivity.class);
-        intent.putExtra("ROW_ID",eyd);
-        startActivity(intent);
+        setGroupParents();
+
+        listAdapter = new ExpandableListAdapterHS(getActivity(), listDataHeader, listDataSubHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+        // listAdapter.notifyDataSetChanged();
+
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int previousItem = -1;
+
+            @Override   // collapse list
+            public void onGroupExpand(int groupPosition) {
+                //setImageRowPosition(groupPosition);
+                if(groupPosition != previousItem ) {
+                    expListView.collapseGroup(previousItem);
+                    //expListView.setAlpha(0.75f);
+                }
+                previousItem = groupPosition;
+            }
+        });
 
     }
-    */
-
     // method to add parent & child events
     public void setGroupParents() {
 
@@ -154,17 +166,17 @@ public class HSFrag extends Fragment {
 
                 //update paused column if countdown has expired or countup has not started yet
 
-                if(eventRecord.get(i).get_paused() == 0) {
+                //if(eventRecord.get(i).get_paused() == 0) {
                     long currentTime = System.currentTimeMillis() / 1000;
                     if ((eventRecord.get(i).get_direction() == 1 && (eventRecord.get(i).get_evtime() < currentTime)) ||
                             (eventRecord.get(i).get_direction() == 0 && (eventRecord.get(i).get_evtime() > currentTime))) {
                         Events myEvent = dbHandler.getMyEvent(Integer.parseInt(foods[i]));
-                        myEvent.set_paused(1);
+                        //myEvent.set_paused(1);
                         dbHandler.updateEvent(myEvent);
                         eventRecord.remove(i);
                         eventRecord.add(myEvent);
                     }
-                }
+                //}
 
             }
         }
@@ -184,161 +196,26 @@ public class HSFrag extends Fragment {
 
         return sdf.format(new Date(millis));
         //return indicator + dtf.print(dt);
-
     }
-    /*
-        public String formatDateTime(int eventTime,int direction){
-            String[] d = new String[] {"up from\n","down to\n"};
-            long millis = eventTime;
-            millis *= 1000;
-            DateTime dt = new DateTime(millis, DateTimeZone.getDefault()); // needs to be a local date
-            DateTimeFormatter dtf = DateTimeFormat.forPattern("dd MMM yyyy HH:mm");
 
-            return "Count " + d[direction] + " " + dtf.print(dt);
-        }
-    */
-    /*
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-    */
+    public void onResume() {
+        super.onResume();
 
-    // Not yet implemented
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        //System.out.println("!!- " + " Add ID is " + R.id.action_add + " and samples id is " + R.id.action_samples);
-        menuAction = "";
-        switch (item.getItemId()) {
-            case R.id.action_add:
-                //Intent addAct = new Intent(MainActivity.this, EventEditor.class);
-                Intent addAct = new Intent(MainActivity.this, CounterSettingsActivity.class);
-                //Intent.putExtra("ROW_ID","11");
-                int eventsInPlay = dbHandler.getRowCount("ALL"); //get number of active rows
-                //Toast.makeText(getApplicationContext(), "You already have " + eventsInPlay + " events", Toast.LENGTH_SHORT).show();
-                if (eventsInPlay >= maxAllowableEvents) {
-                    boolean response = setupDialog("Upgrade to Pro?","Yes","No");
-                    //Toast.makeText(getApplicationContext(), "OK, Your loss pal" , Toast.LENGTH_SHORT).show();
-
-                } else {
-                    startActivity(addAct);
-                }
-
-
-
-                return true;
-            case R.id.action_utility:
-                Intent utility = new Intent(MainActivity.this, Utility.class);
-                startActivity(utility);
-                return true;
-            case R.id.action_deleted:
-                Intent deleted = new Intent(MainActivity.this, DeletedItems.class);
-                startActivity(deleted);
-                return true;
-            case R.id.action_samples:
-                menuAction = "Sample";
-                boolean response = setupDialog("Manage Sample Events","Restore","Delete");
-                return true;
-            case R.id.action_settings:
-                Intent settings = new Intent(MainActivity.this, SettingsActivity.class); //will change to Settings.class when created
-                //Intent settings = new Intent(MainActivity.this, ColorPickerPreference.class); //will change to Settings.class when created
-                startActivity(settings);
-                return true;
-            case R.id.action_backrest:
-                Intent backrest = new Intent(MainActivity.this, BackupAndRestore.class);
-                startActivity(backrest);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (dbHandler.getRowCount("A") > eventRecord.size()) {
+            // Ah ha.. a new one was added
+            //Toast.makeText(getActivity(), "Resumed and something was added" , Toast.LENGTH_SHORT).show();
+            setup_list();
+        //} else {
+        //    Toast.makeText(getActivity(), "Resumed with no addition" , Toast.LENGTH_SHORT).show();
         }
     }
-    */
+
     public void AWarmWelcome() {
         //Toast.makeText(getApplicationContext(), "Welcome my friend" , Toast.LENGTH_SHORT).show();
         Intent firsttime = new Intent(String.valueOf(FirstTime.class));
         startActivity(firsttime);
         //return true;
     }
-/*
-    public boolean setupDialog(String message, String btnPos, String btnNeg) {
-        //
-        EventDialog eventDialog = new EventDialog();
-
-        Bundle bundle = new Bundle();
-        //System.out.println("!!- " + " rows selected=" + rowidsSelected);
-
-        bundle.putString("dialogMessage", message);
-        bundle.putString("buttonPos", btnPos);
-        bundle.putString("buttonNeg", btnNeg);
-        eventDialog.setArguments(bundle);
-        //eventDialog.show(fm, "fragment_edit_name");
-        eventDialog.show(getFragmentManager(), "dialog");
-
-        return true;
-    }
-    */
-/*
-    @Override
-    public void onDataPass(String data) {
-
-        //if (data .equals("Yes")) { // Yes button was clicked in Alertdialog
-        //    Toast.makeText(getApplicationContext(), "Good decision", Toast.LENGTH_SHORT).show();
-        //} else {
-        //    Toast.makeText(getApplicationContext(), "OK, Your loss pal" , Toast.LENGTH_SHORT).show();
-        //}
-        if(menuAction .equals("Sample")) {
-            if (data .equals("No")) { // Sample menu item was selected and clear selected from dialog
-                //Toast.makeText(getApplicationContext(), "Sample " + data, Toast.LENGTH_SHORT).show();
-                dbHandler.manageSampleEvents("I"); // samples already exist but make them inactive
-            } else {
-                dbHandler.manageSampleEvents("A"); // create samples and make them inactive
-                //    dbHandler.insertSampleEvents();
-            }
-            onPause(); // call onpause so that on onresume can be called to refresh list
-            onResume();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Get instance to shared pref for first time check
-        SharedPreferences pref = getSharedPreferences (FirstTimePref, MODE_PRIVATE);
-        if(pref.getInt("FirstTime", 0) == 0) {
-            AWarmWelcome();
-            //if(firstTime == 0)
-            //finish();
-        }
-        //System.out.println("!!- " + "starting main activity");
-    }
-    */
-/*
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        setGroupParents();
-
-        listAdapter = new ExpandableListAdapterHS(getActivity(), listDataHeader, listDataSubHeader, listDataChild);
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-
-        // Get instance to shared pref class
-       // SharedPreferences pref = getSharedPreferences (MyPREFERENCES, MODE_PRIVATE);
-
-        //int bgColor = pref.getInt("listBgColor", -16776961); // Get background color from pref file
-        linLayout.setBackgroundColor(Color.BLUE);
-
-        //setTitle(getTitle() + " (" + dbHandler.getRowCount("A") + ")"); // put number of active events in title bar
-        //setTitle(getString(R.string.app_name) + " (" + dbHandler.getRowCount("A") + ")"); // put number of active events in title bar
-
-    }
-*/
 
 }

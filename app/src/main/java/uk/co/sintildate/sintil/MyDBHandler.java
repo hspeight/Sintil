@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class MyDBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 28;
+    private static final int DATABASE_VERSION = 29;
     private static final String DATABASE_NAME = "events.db";
     public static final  String TABLE_EVENTS = "events";
     public static final  String COLUMN_ID = "_id";
@@ -26,7 +26,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final  String COLUMN_EVENT_DAYSONLY = "daysonly";
     public static final  String COLUMN_EVENT_BGIMAGE = "bgimage";
     public static final  String COLUMN_EVENT_UNITS = "timeunits";
-    public static final  String COLUMN_EVENT_PAUSED = "paused";
+    public static final  String COLUMN_EVENT_BGCOLOR = "bgcolor";
 
     private static final String DEBUG_TAG = "DBH";
 
@@ -51,7 +51,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_EVENT_DAYSONLY + " INTEGER, " +
                 COLUMN_EVENT_BGIMAGE + " TEXT, " +
                 COLUMN_EVENT_UNITS + " TEXT, " +
-                COLUMN_EVENT_PAUSED + " INTEGER " +
+                COLUMN_EVENT_BGCOLOR + " INTEGER " +
                 ");";
         //Log.i(DEBUG_TAG, "query is " + query);
         try{
@@ -85,7 +85,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_EVENT_DAYSONLY, event.get_dayyears());
         values.put(COLUMN_EVENT_BGIMAGE, event.get_bgimage());
         values.put(COLUMN_EVENT_UNITS, event.get_timeunits());
-        values.put(COLUMN_EVENT_PAUSED, event.get_paused());
+        values.put(COLUMN_EVENT_BGCOLOR, event.get_bgcolor());
         // add code here for new fields
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_EVENTS, null, values);
@@ -130,7 +130,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_EVENTS, new String[] { COLUMN_ID,
                         COLUMN_EVENT_NAME,COLUMN_EVENT_INFO,COLUMN_EVENT_DIR,COLUMN_EVENT_TIME,
                         COLUMN_EVENT_STATUS, COLUMN_EVENT_TYPE,COLUMN_EVENT_INC_MIN,COLUMN_EVENT_INC_SEC,
-                        COLUMN_EVENT_DAYSONLY,COLUMN_EVENT_BGIMAGE,COLUMN_EVENT_UNITS,COLUMN_EVENT_PAUSED }, COLUMN_ID + "=?",
+                        COLUMN_EVENT_DAYSONLY,COLUMN_EVENT_BGIMAGE,COLUMN_EVENT_UNITS,COLUMN_EVENT_BGCOLOR }, COLUMN_ID + "=?",
                 new String[] { String.valueOf(rowid) }, null, null, null, null);
 
         if (cursor != null)
@@ -183,7 +183,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         cv.put(COLUMN_EVENT_DAYSONLY, myEvent.get_dayyears());
         cv.put(COLUMN_EVENT_BGIMAGE, myEvent.get_bgimage());
         cv.put(COLUMN_EVENT_UNITS, myEvent.get_timeunits());
-        cv.put(COLUMN_EVENT_PAUSED, myEvent.get_paused());
+        cv.put(COLUMN_EVENT_BGCOLOR, myEvent.get_bgcolor());
         //System.out.println("!!- " + " days only is " + myEvent.get_dayyears());
         db.update(TABLE_EVENTS, cv, "_id = " + myEvent.get_id(), null);
         db.close();

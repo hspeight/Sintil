@@ -2,7 +2,11 @@ package uk.co.sintildate.sintil;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,23 +21,29 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
+import static android.content.Intent.ACTION_PICK;
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import petrov.kristiyan.colorpicker.ColorPal;
+import petrov.kristiyan.colorpicker.ColorPicker;
 
 public class NewEventActivity extends AppCompatActivity {
 
     Button btnDatePicker, btnTimePicker;
     EditText txtDate, txtTime, txtTitle, txtDesc;
     TextView txtSummary;
-    private int mYear, mMonth, mDay, mHour, mMinute, direction, epoch;
+    private int mYear, mMonth, mDay, mHour, mMinute, direction, epoch, mColor;
     Resources res;
     DateValidator dateValidator;
     String DEBUG_TAG = "NEA";
@@ -41,6 +51,11 @@ public class NewEventActivity extends AppCompatActivity {
     TextInputLayout tilDate, tilTitle;
     boolean formIsValid;
     MyDBHandler dbHandler;
+    private static final int GALLERY_REQUEST = 4407;
+    private String image;
+    //ImageView imgViewColor;
+    Button imgViewColor;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +78,8 @@ public class NewEventActivity extends AppCompatActivity {
         txtSummary = (TextView) findViewById(R.id.summary);
         tilDate = (TextInputLayout) findViewById(R.id.tilDate);
         tilTitle = (TextInputLayout) findViewById(R.id.tilTitle);
+        //imgViewColor = (ImageView) findViewById(R.id.imgViewPaletteColor);
+        //imgViewColor = (Button) findViewById(R.id.imgViewPaletteColor);
         //tilDate.setErrorEnabled(true);
 
 //        btnDatePicker.setOnClickListener(this);
@@ -133,6 +150,8 @@ public class NewEventActivity extends AppCompatActivity {
 
             }
         });
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
     }
 
@@ -217,69 +236,6 @@ public class NewEventActivity extends AppCompatActivity {
         }
         txtSummary.setText(s);
     }
-/*
-    @Override
-    public void onClick(View v) {
-
-        if (v == txtDate) {
-            String mDateIn = txtDate.getText().toString();
-            final Calendar cal = Calendar.getInstance();
-            // Get Current Date if nothing has been entered
-            if(mDateIn.matches("")) { // field is blank
-                mYear = cal.get(Calendar.YEAR);
-                mMonth = cal.get(Calendar.MONTH);
-                mDay = cal.get(Calendar.DAY_OF_MONTH);
-            } else {
-                //cal.set(Calendar.YEAR, 2014);
-                //cal.set(Calendar.MONTH, 11);
-                //cal.set(Calendar.MINUTE, 33);
-                boolean result = dateValidator.isThisDateValid(mDateIn, "dd-MM-yyyy");
-                //Log.d(DEBUG_TAG,"result for " +  txtDate.getText().toString() + " is " + result);
-                if(result) {
-                    mDay = Integer.parseInt(mDateIn.split("-")[0]);
-                    mMonth = Integer.parseInt(mDateIn.split("-")[1]) -1;
-                    mYear = Integer.parseInt(mDateIn.split("-")[2]);
-                }
-                //mYear = 2014;
-                //mMonth = 10;
-                //mDay = 13;
-            }
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-                            //txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                            txtDate.setText(String.format(res.getString(R.string.display_date),dayOfMonth, monthOfYear + 1, year));
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        }
-        if (v == btnTimePicker) {
-
-            // Get Current Time
-            final Calendar c = Calendar.getInstance();
-            mHour = c.get(Calendar.HOUR_OF_DAY);
-            mMinute = c.get(Calendar.MINUTE);
-
-            // Launch Time Picker Dialog
-            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                    new TimePickerDialog.OnTimeSetListener() {
-
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay,
-                                              int minute) {
-                        //String x = String.format(res.getString(R.string.display_time),hourOfDay);
-                            txtTime.setText(String.format(res.getString(R.string.display_time),hourOfDay,minute));
-                        }
-                    }, mHour, mMinute, false);
-            timePickerDialog.show();
-        }
-    }
-*/
 
     public void save_clicked (View v) {
 
@@ -344,6 +300,7 @@ public class NewEventActivity extends AppCompatActivity {
         myEvent.set_direction(direction);
         myEvent.set_evtype("R");
         myEvent.set_evstatus("A");
+        myEvent.set_bgcolor(mColor);
         myEvent.set_timeunits("3"); // needs sorting
 
         dbHandler.addEvent(myEvent);
@@ -359,4 +316,38 @@ public class NewEventActivity extends AppCompatActivity {
     public void cancel_clicked (View v) {
         finish();
     }
+
+    public void camera_clicked(View v){
+        Intent gallery = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, GALLERY_REQUEST);
+    }
+
+    public void preview_clicked (View v) {
+        Toast.makeText(this, "Preview HAS BEEN CLICKED ", Toast.LENGTH_LONG).show();
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null) {
+            image = data.getData().toString();
+            //loadImage();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+    public void palette_clicked(View v){
+        //Toast.makeText(this, "Pallette HAS BEEN CLICKED ", Toast.LENGTH_LONG).show();
+        final ColorPicker colorPicker = new ColorPicker(this);
+        colorPicker.setRoundColorButton(true).setTitle("Chose the canvas color for this event");
+        colorPicker.setOnFastChooseColorListener(new ColorPicker.OnFastChooseColorListener() {
+            @Override
+            public void setOnFastChooseColorListener(int position, int color) {
+                Toast.makeText(getApplicationContext(), "I chose " + color, Toast.LENGTH_LONG).show();
+                Log.d(DEBUG_TAG,color + " chosen");
+                fab.setBackgroundTintList(ColorStateList.valueOf(color));
+                mColor = color;
+                //imgViewColor.setBackgroundTintList(color);
+            }
+        }).disableDefaultButtons(true).setColumns(5).show();
+    }
+
 }

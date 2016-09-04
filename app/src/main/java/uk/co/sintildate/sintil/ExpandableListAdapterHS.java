@@ -97,19 +97,7 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
         imgChildPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                if(HSFrag.eventRecord.get(groupPosition).get_paused() == 0) {
-                    long currentTime = System.currentTimeMillis() / 1000;
-                    if ((HSFrag.eventRecord.get(groupPosition).get_direction() == 1 && (HSFrag.eventRecord.get(groupPosition).get_evtime() < currentTime)) ||
-                        (HSFrag.eventRecord.get(groupPosition).get_direction() == 0 && (HSFrag.eventRecord.get(groupPosition).get_evtime() > currentTime))) {
-                        Events myEvent = dbHandler.getMyEvent(HSFrag.eventRecord.get(groupPosition).get_id());
-                        myEvent.set_paused(1);
-                        dbHandler.updateEvent(myEvent);
-                        HSFrag.eventRecord.remove(groupPosition);
-                        HSFrag.eventRecord.add(myEvent);
-                    }
-                }
-                */
+
                 Intent intent = new Intent(_context, EventCounterFragment.class);
                 intent.putExtra("ROW_INDEX",groupPosition); // Start viewpager at this record
                 _context.startActivity(intent);
@@ -117,19 +105,7 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
         });
 
         relLayout = convertView.findViewById(R.id.relLayoutChildBG); // Background of row's child view
-        //relLayout.setBackgroundColor(rowColor); x`// hard code to always be this color
 
-        //System.out.println("!!-  " + " here1");
-   /*     imgListChild.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-                System.out.println("!!-  " + gp + "/" + childPosition);
-                //delEvent(v, "4");
-            }
-        });
-*/
-        //System.out.println("!!-  " + groupPosition + "/" + childPosition);
         return convertView;
     }
 
@@ -213,47 +189,5 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
-/*
-    public boolean delEvent(final View v, final String rowID){
-        dbHandler = new MyDBHandler(v.getContext(), null, null, 1);
-        System.out.println("!!- " + rowID);
-        //Toast.makeText(getApplicationContext(), "Delete clicked "  + rowID, Toast.LENGTH_SHORT).show();
-        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-        //System.out.println("!!- here");
-        builder.setTitle("Delete Event?")
-                .setIcon(R.drawable.ic_launcher)
-                .setMessage("Click OK to delete the event")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        boolean result = dbHandler.deleteEvent(Integer.parseInt(rowID));
-                        if (result) {
-                            Toast.makeText(v.getContext(), "Event Deleted", Toast.LENGTH_SHORT).show();
-                            //finish();
-                            //onPause();; // call onpause so that on onresume can be called to refresh list
-                            //onResume();
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
 
-        return true;
-    }
-
-    public void reorderEventArray(ArrayList<Events> evArray, int pos) {
-
-        ArrayList<Events> e1 = new ArrayList<>(evArray.subList(pos, evArray.size()));
-        Log.d(DEBUG_TAG,"in function++++++++++++++++++++++++++++++++++");
-        for (Events temp : e1) {
-            Log.d(DEBUG_TAG, ">>>" + temp.get_id());
-        }
-
-    }
-*/
 }

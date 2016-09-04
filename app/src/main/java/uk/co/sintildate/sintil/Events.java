@@ -14,7 +14,7 @@ public class Events {
     private int _dayyears;
     private String _bgimage;
     private String _timeunits;
-    private int _paused;
+    private int _bgcolor;
 
     // empty constructor
     public Events() {
@@ -27,7 +27,7 @@ public class Events {
     }
     // constructor
     public Events(int id, String eventname, String eventinfo, int direction, int evtime, String evstatus,
-                  String evtype, int incmin, int incsec, int dayyears, String bgimage, String tunits, int paused) {
+                  String evtype, int incmin, int incsec, int dayyears, String bgimage, String tunits, int bgcolor) {
         this._id = id;
         this._eventname = eventname;
         this._eventinfo = eventinfo;
@@ -40,11 +40,11 @@ public class Events {
         this._dayyears = dayyears;
         this._bgimage = bgimage;
         this._timeunits = tunits;
-        this._paused = paused;
+        this._bgcolor = bgcolor;
     }
     // constructor
     public Events(String eventname, String eventinfo, int direction, int evtime, String evstatus,
-                  String  evtype, int incmin, int incsec, int dayyears, String bgimage, String tunits, int paused) {
+                  String  evtype, int incmin, int incsec, int dayyears, String bgimage, String tunits, int bgcolor) {
         this._eventname = eventname;
         this._eventinfo = eventinfo;
         this._direction = direction;
@@ -56,7 +56,7 @@ public class Events {
         this._dayyears = dayyears;
         this._bgimage = bgimage;
         this._timeunits = tunits;
-        this._paused = paused;
+        this._bgcolor = bgcolor;
 
     }
 
@@ -90,8 +90,8 @@ public class Events {
     public int get_incsec() {
         return _incsec;
     }
-    public int get_paused() {
-        return _paused;
+    public int get_bgcolor() {
+        return _bgcolor;
     }
     public String get_bgimage() {
         return _bgimage;
@@ -120,7 +120,7 @@ public class Events {
     public void set_direction(int _direction) {
         this._direction = _direction;
     }
-    public void set_paused(int _paused) {
-        this._paused = _paused;
+    public void set_bgcolor(int _bgcolor) {
+        this._bgcolor = _bgcolor;
     }
 }

@@ -2,6 +2,7 @@ package uk.co.sintildate.sintil;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,8 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
-import net.colindodd.gradientlayout.GradientLinearLayout;
+import com.squareup.picasso.Transformation;
 
 import java.text.SimpleDateFormat;
 import java.util.Observable;
@@ -40,14 +42,17 @@ public class EventCounterFragment extends FragmentActivity {
     TextView textHour;
     TextView textDays;
     TextView textYears;
-    LinearLayout linLayTimer_counter;
+    LinearLayout linLayTimer_counter, linLay;
     CountDownTimer cdt;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_counter);
+         linLay = (LinearLayout) findViewById(R.id.linLayoutCounterBG);
+        //linLay.setBackgroundColor(Color.BLUE);
         // The last two arguments ensure LayoutParams are inflated
         // properly.
+        /*
         int[][][] THEME_COLORS = new int[3][3][3];
         THEME_COLORS[0][0][0]=255;
         THEME_COLORS[0][1][0]=0;
@@ -58,6 +63,7 @@ public class EventCounterFragment extends FragmentActivity {
         THEME_COLORS[2][0][0]=255;
         THEME_COLORS[2][1][0]=255;
         THEME_COLORS[2][0][1]=0;
+        */
         //rootView = inflater.inflate(R.layout.event_counter, container, false);
         Bundle args = getIntent().getExtras();
         if (args != null) {
@@ -178,6 +184,7 @@ public class EventCounterFragment extends FragmentActivity {
 
     public void setup_counter(int index) {
         //Log.d(DEBUG_TAG,"index+++++++++++++++++++++++++=" + index);
+        linLay.setBackgroundColor(HSFrag.eventRecord.get(index).get_bgcolor());
         if (timer_has_started)
             cdt.cancel();
         timer_has_started = false;
@@ -225,10 +232,17 @@ public class EventCounterFragment extends FragmentActivity {
             //mTime = HSFrag.eventRecord.get(index).get_evtime();
             //mUsedayyear = HSFrag.eventRecord.get(index).get_dayyears();
         }
-
+/*
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(Color.RED)
+                .borderWidthDp(1)
+                .oval(false)
+                .build();
+*/
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         Picasso.with(this)
                 .load(R.drawable.bass)
+                //.transform(transformation)
                 .into(imageView);
 
         if (ok_to_start) {

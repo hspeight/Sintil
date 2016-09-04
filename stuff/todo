@@ -1,4 +1,10 @@
+need a way to refresh screen after screen lock (check S.O.)
+event editor
 update drawables with correct icon sizes
+sort list on alpha/date added
 preserve activity on rotation
 chose image
 backup & restore (could be used to transfer events to pro?)
+Missing contentDescription attribute on imagebuttons
+drawer items: go pro, backup, restore, settings, FAQ, quit, share Sintil?, feedback, Rate this app (use sections in drawer)
+
