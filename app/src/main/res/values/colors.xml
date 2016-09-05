@@ -12,4 +12,22 @@
     <color name="text_primary">#D9FFFFFF</color>
     <color name="text_secondary">#D9000000</color>
 
+    <!-- event counter BG Colors from https://material.google.com/style/color.html#color-color-palette !-->
+
+    <color name="color1">#f44336</color>
+    <color name="color2">#9c27b0</color>
+    <color name="color3">#673ab7</color>
+    <color name="color4">#2196f3</color>
+    <color name="color5">#03a9f4</color>
+    <color name="color6">#009688</color>
+    <color name="color7">#4caf50</color>
+    <color name="color8">#cddc39</color>
+    <color name="color9">#ffeb3b</color>
+    <color name="color10">#ffc107</color>
+    <color name="color11">#ff9800</color>
+    <color name="color12">#ff5722</color>
+    <color name="color13">#795548</color>
+    <color name="color14">#9e9e9e</color>
+    <color name="color15">#000000</color>
+    <color name="color16">#ffffff</color>
 </resources>

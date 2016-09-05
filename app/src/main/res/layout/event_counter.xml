@@ -77,8 +77,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/imageView"
             app:riv_corner_radius="30dip"
-            app:riv_border_width="2dip"
-            app:riv_border_color="#333333"
+
             app:riv_oval="false"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

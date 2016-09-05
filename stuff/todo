@@ -7,4 +7,5 @@ chose image
 backup & restore (could be used to transfer events to pro?)
 Missing contentDescription attribute on imagebuttons
 drawer items: go pro, backup, restore, settings, FAQ, quit, share Sintil?, feedback, Rate this app (use sections in drawer)
-
+date placeholders in title/description?
+presets? e.g. coundown to xmas, new year etc.

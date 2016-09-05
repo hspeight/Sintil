@@ -5,11 +5,14 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -22,6 +25,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -56,6 +60,7 @@ public class NewEventActivity extends AppCompatActivity {
     //ImageView imgViewColor;
     Button imgViewColor;
     FloatingActionButton fab;
+    int[] bgcolorArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +157,8 @@ public class NewEventActivity extends AppCompatActivity {
         });
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color5))); // set fab color to white
+
 
     }
 
@@ -335,19 +342,22 @@ public class NewEventActivity extends AppCompatActivity {
         }
     }
     public void palette_clicked(View v){
+
         //Toast.makeText(this, "Pallette HAS BEEN CLICKED ", Toast.LENGTH_LONG).show();
         final ColorPicker colorPicker = new ColorPicker(this);
-        colorPicker.setRoundColorButton(true).setTitle("Chose the canvas color for this event");
+        colorPicker.setRoundColorButton(true).setTitle("Chose the event canvas color");
+        //int bgarray = R.array.bg_colors;
+        colorPicker.setColors(R.array.bg_colors);
         colorPicker.setOnFastChooseColorListener(new ColorPicker.OnFastChooseColorListener() {
             @Override
             public void setOnFastChooseColorListener(int position, int color) {
                 Toast.makeText(getApplicationContext(), "I chose " + color, Toast.LENGTH_LONG).show();
-                Log.d(DEBUG_TAG,color + " chosen");
-                fab.setBackgroundTintList(ColorStateList.valueOf(color));
+                //Log.d(DEBUG_TAG,color + " chosen");
+                //fab.setBackgroundTintList(ColorStateList.valueOf(color));
                 mColor = color;
                 //imgViewColor.setBackgroundTintList(color);
             }
-        }).disableDefaultButtons(true).setColumns(5).show();
+        }).setColumns(4).show();
     }
 
 }
