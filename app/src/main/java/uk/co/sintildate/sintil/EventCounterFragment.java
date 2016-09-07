@@ -198,10 +198,11 @@ public class EventCounterFragment extends FragmentActivity {
         //    ((TextView) rootView.findViewById(R.id.textViewFuture)).setText(sdf.format((long) mTime * 1000));
         ((TextView) findViewById(R.id.textEvTitle)).setText(HSFrag.eventRecord.get(index).get_eventname());
         ((TextView) findViewById(R.id.textOptionalInfo)).setText(HSFrag.eventRecord.get(index).get_eventinfo());
-        ((TextView) findViewById(R.id.textViewFuture)).setText(String.valueOf(HSFrag.eventRecord.get(index).get_id()));
         final long currentTime = System.currentTimeMillis() / 1000;
         //final int timeDiff = (int) currentTime - mTime;
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", java.util.Locale.getDefault());
+        ((TextView) findViewById(R.id.textViewFuture)).setText(sdf.format((long) HSFrag.eventRecord.get(index).get_evtime() * 1000));
+
         textDays = (TextView) findViewById(R.id.textDays);
         textYears = (TextView) findViewById(R.id.textYears);
         textSecs = (TextView) findViewById(R.id.textSecs);

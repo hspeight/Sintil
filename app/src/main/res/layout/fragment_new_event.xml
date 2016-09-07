@@ -1,16 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="uk.co.sintildate.sintil.NewEventActivity">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,64 +9,7 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context="uk.co.sintildate.sintil.NewEventActivity"
-            tools:showIn="@layout/fragment_new_event">
-            <android.support.design.widget.AppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/AppBarOverlay"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentTop="true">
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/PopupOverlay">
-
-                    <TextView
-                        android:id="@+id/toolbar_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:singleLine="true"
-                        android:text="@string/cancel"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:onClick="cancel_clicked"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/preview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:singleLine="true"
-                        android:text="@string/text_preview"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:onClick="preview_clicked"
-                        />
-
-                    <TextView
-                        android:id="@+id/save"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:singleLine="true"
-                        android:text="@string/text_save"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:onClick="save_clicked"
-                        android:paddingRight="10dp" />
-
-                </android.support.v7.widget.Toolbar>
-
-            </android.support.design.widget.AppBarLayout>
+            >
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -198,7 +129,7 @@
                 android:id="@+id/linLayColor"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/summary">
 
                 <ImageButton
@@ -223,7 +154,7 @@
                 android:id="@+id/liLayCamera"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/linLayColor">
 
             <ImageButton
@@ -243,7 +174,21 @@
                 android:layout_gravity="center"
                 android:paddingLeft="10dp" />
             </LinearLayout>
+            <Button style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/btnCancel"
+                android:layout_alignParentBottom="true">
+            </Button>
+            <Button style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OK"
+                android:id="@+id/btnOK"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/btnCancel"
+                android:layout_toEndOf="@+id/btnCancel">
+            </Button>
         </RelativeLayout>
-    </ScrollView>
 
-</android.support.design.widget.CoordinatorLayout>

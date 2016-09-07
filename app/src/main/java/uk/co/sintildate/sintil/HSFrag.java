@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,14 +101,15 @@ public class HSFrag extends Fragment {
                 //        .setAction("Action", null).show();
                 //fab.setVisibility(View.INVISIBLE);
                 //getFragmentManager().beginTransaction()
-                //        .replace(R.id.fragment_container, new NewEventDialogFragment()).addToBackStack("fragBack")
+                //        .replace(R.id.fragment_container, new NewEventPrefsFragment()).addToBackStack("prefsfrag")
                 //        .commit();
-                Intent intent = new Intent(getActivity(), NewEventActivity.class);
+                //Intent intent = new Intent(getActivity(), NewEventActivity.class);
                 //Intent intent = new Intent(getActivity(), Main2Activity.class);
-                startActivity(intent);
-               // FragmentManager fm = getActivity().getSupportFragmentManager();
-               // NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
-               // newEventDialogFragment.show(fm, "fragment_new_event");
+                //startActivity(intent);
+                  FragmentManager fm = getActivity().getSupportFragmentManager();
+                  NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
+                  newEventDialogFragment.show(fm, "fragment_new_event");
+
             }
         });
 
@@ -198,19 +200,6 @@ public class HSFrag extends Fragment {
         //return indicator + dtf.print(dt);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (dbHandler.getRowCount("A") > eventRecord.size()) {
-            // Ah ha.. a new one was added
-            //Toast.makeText(getActivity(), "Resumed and something was added" , Toast.LENGTH_SHORT).show();
-            setup_list();
-        //} else {
-        //    Toast.makeText(getActivity(), "Resumed with no addition" , Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void AWarmWelcome() {
         //Toast.makeText(getApplicationContext(), "Welcome my friend" , Toast.LENGTH_SHORT).show();
         Intent firsttime = new Intent(String.valueOf(FirstTime.class));
@@ -218,4 +207,10 @@ public class HSFrag extends Fragment {
         //return true;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setup_list();
+
+    }
 }

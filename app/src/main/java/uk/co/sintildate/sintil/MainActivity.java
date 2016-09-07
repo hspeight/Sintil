@@ -22,7 +22,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NewEventDialogFragment.onNewEventAdded {
 
     private Drawer result;
     public String DEBUG_TAG = "MAC";
@@ -38,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
         //if you want to update the items at a later time it is recommended to keep it in a variable
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_backup);
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_restore);
-        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_settings);
-        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_utility);
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_restore);
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.drawer_item_settings);
+        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.drawer_item_utility);
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -154,5 +154,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void onEventAdded(boolean recAdded) {
 
+        //if (dbHandler.getRowCount("A") > eventRecord.size()) {
+        if(recAdded) {
+            HSFrag hsfrag = new HSFrag();
+
+
+
+            //Toast.makeText(this, "something was added" , Toast.LENGTH_SHORT).show();
+            //setup_list();
+            //} else {
+            //Toast.makeText(this, "no addition" , Toast.LENGTH_SHORT).show();
+
+        }
+    }
 }
