@@ -1,15 +1,21 @@
 package uk.co.sintildate.sintil;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import com.melnykov.fab.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +28,7 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
     private Context _context;
     private List<String> _listDataHeader; // header titles
     private List<String> _listDataSubHeader; // Sub header titles
+    private FloatingActionButton _fab;
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
     SharedPreferences pref;
@@ -32,11 +39,12 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
     String DEBUG_TAG = "ELA";
 
     public ExpandableListAdapterHS(Context context, List<String> listDataHeader, List<String> listDataSubHeader,
-                                   HashMap<String, List<String>> listChildData) {
+                                   HashMap<String, List<String>> listChildData, FloatingActionButton fab) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataSubHeader = listDataSubHeader;
         this._listDataChild = listChildData;
+        this._fab = fab;
 
         //this.stars = new boolean[listChildData.size()];
         dbHandler = new MyDBHandler(context, null, null, 1);
@@ -69,7 +77,6 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
         }
 
         TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
-
         txtListChild.setText(childText);
 
         ImageView imgChildDelete = (ImageView) convertView.findViewById(R.id.imageViewDelete);
@@ -84,12 +91,29 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
                 _listDataHeader.remove(groupPosition);
                 notifyDataSetChanged();
                 HSFrag.eventRecord.remove(groupPosition);
-                //Toast.makeText(v.getContext(), " result is " + hs, Toast.LENGTH_SHORT).show();
+                Activity activity = (Activity) _context;
+                activity.setTitle(activity.getPackageManager().getApplicationLabel(activity.getApplicationInfo()) + " (" + HSFrag.eventRecord.size() + ")");
             }
         });
 
         ImageView imgChildEdit = (ImageView) convertView.findViewById(R.id.imageViewEdit);
         imgChildEdit.setTag(groupPosition);
+        imgChildEdit.findViewById(R.id.imageViewEdit);
+        imgChildEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Log.d(DEBUG_TAG,"grouppos is " + groupPosition);
+                int recordID = HSFrag.eventRecord.get(groupPosition).get_id();
+                HSFrag hsFrag = new HSFrag();
+                //Activity activity = (Activity) _context;
+                hsFrag.simulateFabClick(_fab);
+
+                //Activity activity = (Activity) _context;
+                //FragmentManager fm = getActivity().getSupportFragmentManager();
+                //NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
+                //newEventDialogFragment.show(fm, "fragment_new_event");
+            }
+        });
 
         ImageView imgChildPlay = (ImageView) convertView.findViewById(R.id.imageViewPlay);
         imgChildPlay.setTag(groupPosition);
@@ -97,7 +121,6 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
         imgChildPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(_context, EventCounterFragment.class);
                 intent.putExtra("ROW_INDEX",groupPosition); // Start viewpager at this record
                 _context.startActivity(intent);
@@ -167,6 +190,7 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
 
         return convertView;
     }
+
 
     public void removeGroup(int group) {
         //TODO: Remove the according group. Dont forget to remove the children aswell!

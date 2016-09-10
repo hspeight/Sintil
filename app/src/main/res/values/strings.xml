@@ -51,5 +51,20 @@
     <string name="event_title_key">event_title_key</string>
     <string name="event_desc_key">event_desc_key</string>
 
+    <!-- Drawer stuff -->
+    <string name="nav_item_attachment">Attachment</string>
+    <string name="nav_item_images">Images</string>
+    <string name="nav_item_utility">Utilities</string>
+    <string name="nav_sub_menu">Sub Menu</string>
+    <string name="nav_sub_menu_item01">Sub Menu Item 1</string>
+    <string name="nav_sub_menu_item02">Sub Menu Item 2</string>
+    <string name="drawer_header_text">Since or Until</string>
+    <string name="second_activity_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin consectetur diam id aliquam scelerisque. Donec ultrices lacus vel dignissim pharetrar. Vestibulum feugiat eleifend diam, nec interdum augue tincidunt sit amet. Praesent feugiat est auctor lacus consectetur, vitae pellentesque dolor laoreet.</string>
+    <string name="title_activity_second">SecondActivity</string>
+
+    <!-- Error messages -->
+    <string name="date_error1">Cannot count down to a past date</string>
+    <string name="title_error1">Please enter the event title</string>
+
 
 </resources>

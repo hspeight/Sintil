@@ -16,10 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.lzyzsd.randomcolor.RandomColor;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.util.Random;
 
 //import android.content.Intent;
 //import android.preference.PreferenceManager;
@@ -166,22 +170,76 @@ public class Utility extends Fragment implements View.OnClickListener {
     }
 
     public void insertRandom (View view) {
+        String[] sList = { "Burger King", "McDonald's", "Subway", "Pizza Hut","Bahama Breeze",
+                "Panda Express", "Sushiology", "Brio", "Olive Garden", "LongHorn",
+                "Carrabbas", "Seito", "Fridays", "Cheese Cake Factory", "Amura", "Chipotle",
+                "WaWa", "Pio Pio", "Panera Bread", "Mimis Cafe"}; //Array with our personal favorite choice
 
-        //DateTime dt1 = new DateTime(nowMinus24Hrs, DateTimeZone.getDefault());
-        DateTimeFormatter dtf1 = DateTimeFormat.forPattern("dd MMM yyyy HH:mm");
-        //Log.d(DEBUG_TAG, "Integer.parseInt(randnumber.getText().toString() " + "is " +  Integer.parseInt(randnumber.getText().toString()));
-        long now = (System.currentTimeMillis()) / 1000;
-        int nowPlus15Sec = (int) now + 20;
-        Log.d(DEBUG_TAG, "np is " + +nowPlus15Sec + "/");
+        String[] dList = {"The quick brown fox jumps over the lazy dog",
+                "My Mum tries to be cool by saying that she likes all the same things that I do",
+            "If the Easter Bunny and the Tooth Fairy had babies would they take your teeth and leave chocolate for you?",
+                "A purple pig and a green donkey flew a kite in the middle of the night and ended up sunburnt",
+        "What was the person thinking when they discovered cow’s milk was fine for human consumption… and why did they do it in the first place!?",
+                "Last Friday in three week’s time I saw a spotted striped blue worm shake hands with a legless lizard",
+        "Wednesday is hump day, but has anyone asked the camel if he’s happy about it?",
+        "If Purple People Eaters are real… where do they find purple people to eat?",
+        "A song can make or ruin a person’s day if they let it get to them",
+        "Sometimes it is better to just walk away from things and go back to them later when you’re in a better frame of mind"
+/*
+        11. Writing a list of random sentences is harder than I initially thought it would be.
+
+        12. Where do random thoughts come from?
+
+        13. Lets all be unique together until we realise we are all the same.
+
+        14. I will never be this young again. Ever. Oh damn… I just got older.
+
+        15. If I don’t like something, I’ll stay away from it.
+
+        16. I love eating toasted cheese and tuna sandwiches.
+
+        17. If you like tuna and tomato sauce- try combining the two. It’s really not as bad as it sounds.
+
+        18. Someone I know recently combined Maple Syrup & buttered Popcorn thinking it would taste like caramel popcorn. It didn’t and they don’t recommend anyone else do it either.
+
+        19. Sometimes, all you need to do is completely make an ass of yourself and laugh it off to realise that life isn’t so bad after all.
+
+        20. When I was little I had a car door slammed shut on my hand. I still remember it quite vividly.
+
+        21. The clock within this blog and the clock on my laptop are 1 hour different from each other.
+
+        22. I want to buy a onesie… but know it won’t suit me.
+
+        23. I was very proud of my nickname throughout high school but today- I couldn’t be any different to what my nickname was.
+
+        24. I currently have 4 windows open up… and I don’t know why.
+
+        25. I often see the time 11:11 or 12:34 on clocks.
+
+        26. This is the last random sentence I will be writing and I am going to stop mid-
+          */
+        };
         for(int i=0; i< Integer.parseInt(randnumber.getText().toString()); i++) {
-            Events event = new Events("Event No " + i,
-                                        "Created at " + now,
-                                        1,
-                                        nowPlus15Sec,
-                                        "A",
-                                        "R",0,1,0,null, "[4]", 1
-            );
-            dbHandler.addEvent(event);
+            Random r = new Random();
+            RandomColor randomColor = new RandomColor();
+            int mycolor = randomColor.randomColor();
+            //DateTime dt1 = new DateTime(nowMinus24Hrs, DateTimeZone.getDefault());
+            Events myEvent = new Events();
+
+            myEvent.set_eventname(sList[r.nextInt(sList.length - 1)]);
+            //myEvent.set_eventinfo(txtDesc.getText().toString());
+            myEvent.set_eventinfo(dList[r.nextInt(dList.length - 1)]);
+            //myEvent.set_evtime(epoch);
+            myEvent.set_evtime(r.nextInt(1473214474));
+            //myEvent.set_direction(direction);
+            myEvent.set_direction(r.nextInt(2));
+            myEvent.set_evtype("R");
+            myEvent.set_evstatus("A");
+            //myEvent.set_bgcolor(mColor);
+            myEvent.set_bgcolor(mycolor);
+            myEvent.set_timeunits("3"); // needs sorting
+
+            dbHandler.addEvent(myEvent);
         }
     }
     public void dumpData(View view) {

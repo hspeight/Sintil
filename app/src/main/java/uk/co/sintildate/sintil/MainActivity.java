@@ -2,8 +2,12 @@ package uk.co.sintildate.sintil;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,19 +16,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-public class MainActivity extends AppCompatActivity implements NewEventDialogFragment.onNewEventAdded {
 
-    private Drawer result;
+public class MainActivity extends AppCompatActivity {
+//public class MainActivity extends AppCompatActivity implements NewEventDialogFragment.onNewEventAdded {
+
+    private DrawerLayout mDrawerLayout;
     public String DEBUG_TAG = "MAC";
 
     @Override
@@ -33,55 +30,13 @@ public class MainActivity extends AppCompatActivity implements NewEventDialogFra
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        //if you want to update the items at a later time it is recommended to keep it in a variable
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_backup);
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_restore);
-        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.drawer_item_settings);
-        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.drawer_item_utility);
-        // Create the AccountHeader
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.background)
-                .addProfiles(
-                        new ProfileDrawerItem().withName("Since or Until").withEmail("info@sintil.???").withIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.drawer_logo, null))
-                )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        return false;
-                    }
-                })
-                .build();
-
-//create the drawer and remember the `Drawer` result object
-        result = new DrawerBuilder()
-                .withActivity(this)
-                .withAccountHeader(headerResult)
-                .withToolbar(toolbar)
-                .addDrawerItems(
-                        item1,
-                        //new DividerDrawerItem(),
-                        item2,
-                        item3,
-                        item4
-                        //new SecondaryDrawerItem().withName("Settings")
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        displayFrag(position);
-                        //Toast.makeText(MainActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
-                        // do something with the clicked item :D
-                        result.closeDrawer();
-                        return true;
-                    }
-                })
-                .build();
-
-
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        //if(getSupportActionBar() != null)
+        //    getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         if (findViewById(R.id.fragment_container) != null) {
 
@@ -107,11 +62,22 @@ public class MainActivity extends AppCompatActivity implements NewEventDialogFra
                 //getFragmentManager().popBackStack();
                 getSupportFragmentManager().beginTransaction()
                         //.add(R.id.fragment_container, firstFragment).addToBackStack("fragBack").commit();
-                .add(R.id.fragment_container, firstFragment).commit();
+                        .add(R.id.fragment_container, firstFragment).commit();
             }
 
         }
-
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+                displayFrag(menuItem.getItemId());
+                //Toast.makeText(MainActivity.this, menuItem.getGroupId(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -121,16 +87,18 @@ public class MainActivity extends AppCompatActivity implements NewEventDialogFra
         return true;
     }
 
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_settings:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -144,16 +112,15 @@ public class MainActivity extends AppCompatActivity implements NewEventDialogFra
                         .replace(R.id.fragment_container, new SettingsFragment()).addToBackStack("fragBack")
                         .commit();
                 break;
-            case 4:
+            case R.id.navigation_item_utilitiy:
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new Utility()).addToBackStack("fragBack")
                         .commit();
                 break;
         }
 
-
     }
-
+/*
     public void onEventAdded(boolean recAdded) {
 
         //if (dbHandler.getRowCount("A") > eventRecord.size()) {
@@ -169,4 +136,5 @@ public class MainActivity extends AppCompatActivity implements NewEventDialogFra
 
         }
     }
+*/
 }

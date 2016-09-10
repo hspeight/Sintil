@@ -1,6 +1,8 @@
 package uk.co.sintildate.sintil;
 
 //import android.app.Fragment;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ public class HSFrag extends Fragment {
 
     MyDBHandler dbHandler;
 
+    String appTitle;
     ExpandableListAdapterHS listAdapter;
     ExpandableListView expListView;
     View linLayout;
@@ -45,6 +49,7 @@ public class HSFrag extends Fragment {
     static ArrayList<Events> eventRecord = new ArrayList<>();
     public String menuAction;
     View view;
+    FloatingActionButton fab;
     String DEBUG_TAG = "HSF";
 
     public HSFrag() {
@@ -59,13 +64,14 @@ public class HSFrag extends Fragment {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_h2, container, false);
 
-       // view =  inflater.inflate(R.layout.fragment_h2, container, false);
+        // view =  inflater.inflate(R.layout.fragment_h2, container, false);
 
         dbHandler = new MyDBHandler(getActivity(), null, null, 1);
 
         PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, false);
         // for explanation see http://developer.android.com/guide/topics/ui/settings.html#Fragment
 
+        //appTitle = getActivity().getTitle().toString();
         setup_list();
         /*
         setGroupParents();
@@ -92,7 +98,8 @@ public class HSFrag extends Fragment {
         */
         linLayout  = view.findViewById(R.id.linLayoutMainBG);
 
-        final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        //final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
         //fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,10 +113,9 @@ public class HSFrag extends Fragment {
                 //Intent intent = new Intent(getActivity(), NewEventActivity.class);
                 //Intent intent = new Intent(getActivity(), Main2Activity.class);
                 //startActivity(intent);
-                  FragmentManager fm = getActivity().getSupportFragmentManager();
-                  NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
-                  newEventDialogFragment.show(fm, "fragment_new_event");
-
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
+                newEventDialogFragment.show(fm, "fragment_new_event");
             }
         });
 
@@ -121,7 +127,7 @@ public class HSFrag extends Fragment {
 
         setGroupParents();
 
-        listAdapter = new ExpandableListAdapterHS(getActivity(), listDataHeader, listDataSubHeader, listDataChild);
+        listAdapter = new ExpandableListAdapterHS(getActivity(), listDataHeader, listDataSubHeader, listDataChild, fab);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
@@ -141,7 +147,11 @@ public class HSFrag extends Fragment {
             }
         });
 
+        //getActivity().setTitle(getActivity().getApplicationInfo().labelRes + " (" + eventRecord.size() + ")");
+        getActivity().setTitle(getActivity().getPackageManager().getApplicationLabel(getActivity().getApplicationInfo()) + " (" + eventRecord.size() + ")");
+
     }
+
     // method to add parent & child events
     public void setGroupParents() {
 
@@ -169,15 +179,15 @@ public class HSFrag extends Fragment {
                 //update paused column if countdown has expired or countup has not started yet
 
                 //if(eventRecord.get(i).get_paused() == 0) {
-                    long currentTime = System.currentTimeMillis() / 1000;
-                    if ((eventRecord.get(i).get_direction() == 1 && (eventRecord.get(i).get_evtime() < currentTime)) ||
-                            (eventRecord.get(i).get_direction() == 0 && (eventRecord.get(i).get_evtime() > currentTime))) {
-                        Events myEvent = dbHandler.getMyEvent(Integer.parseInt(foods[i]));
-                        //myEvent.set_paused(1);
-                        dbHandler.updateEvent(myEvent);
-                        eventRecord.remove(i);
-                        eventRecord.add(myEvent);
-                    }
+                long currentTime = System.currentTimeMillis() / 1000;
+                if ((eventRecord.get(i).get_direction() == 1 && (eventRecord.get(i).get_evtime() < currentTime)) ||
+                        (eventRecord.get(i).get_direction() == 0 && (eventRecord.get(i).get_evtime() > currentTime))) {
+                    Events myEvent = dbHandler.getMyEvent(Integer.parseInt(foods[i]));
+                    //myEvent.set_paused(1);
+                    dbHandler.updateEvent(myEvent);
+                    eventRecord.remove(i);
+                    eventRecord.add(myEvent);
+                }
                 //}
 
             }
@@ -200,6 +210,13 @@ public class HSFrag extends Fragment {
         //return indicator + dtf.print(dt);
     }
 
+    public void fromAdapter (Context context) {
+        String s = "context.getApplicationInfo().labelRes" + " (" + eventRecord.size() + ")";
+        //Fragment frag = (Fragment) context;
+        //getContext().setTitle(context.getApplicationInfo().labelRes + " (" + eventRecord.size() + ")");
+        //Toast.makeText(context, context.getApplicationInfo().labelRes + " (" + eventRecord.size() + ")", Toast.LENGTH_SHORT).show();
+    }
+
     public void AWarmWelcome() {
         //Toast.makeText(getApplicationContext(), "Welcome my friend" , Toast.LENGTH_SHORT).show();
         Intent firsttime = new Intent(String.valueOf(FirstTime.class));
@@ -213,4 +230,13 @@ public class HSFrag extends Fragment {
         setup_list();
 
     }
+
+    public void simulateFabClick(FloatingActionButton myfab) {
+        //Toast.makeText(activity, "This is it!", Toast.LENGTH_SHORT).show();
+        myfab.performClick();
+        //onResume();
+    }
+
+
+
 }
