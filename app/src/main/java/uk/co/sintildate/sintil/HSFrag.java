@@ -1,24 +1,21 @@
 package uk.co.sintildate.sintil;
 
 //import android.app.Fragment;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
-
-import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +47,9 @@ public class HSFrag extends Fragment {
     public String menuAction;
     View view;
     FloatingActionButton fab;
+    static int _recordID;
+    //static boolean fabButtonClicked;
+
     String DEBUG_TAG = "HSF";
 
     public HSFrag() {
@@ -97,10 +97,8 @@ public class HSFrag extends Fragment {
         });
         */
         linLayout  = view.findViewById(R.id.linLayoutMainBG);
-
         //final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        //fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,9 +111,35 @@ public class HSFrag extends Fragment {
                 //Intent intent = new Intent(getActivity(), NewEventActivity.class);
                 //Intent intent = new Intent(getActivity(), Main2Activity.class);
                 //startActivity(intent);
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
-                newEventDialogFragment.show(fm, "fragment_new_event");
+                //Log.d(DEBUG_TAG, "recordID is " + _recordID);
+                //Bundle args = new Bundle();
+                //args.putInt("num", 123);
+               // Log.d(DEBUG_TAG, ">>>" + _recordID);
+                //FragmentManager fm = getActivity().getSupportFragmentManager();
+                //FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
+                //fm.addToBackStack(null);
+                //EventEditorDialogFragment newEventDialogFragment = new EventEditorDialogFragment();
+                //DialogFragment newFragment = EventEditorDialogFragment.newInstance(_recordID);
+                //fm.putFragment(args,"RecordID", newEventDialogFragment);
+                //newFragment.show(fm, "fragment_new_event");
+                //fm.replace(R.id.fragment_container, new EventEditorDialogFragment());
+                //getActivity().getSupportFragmentManager().beginTransaction()
+                //        .replace(R.id.fragment_container, new EventEditorDialogFragment2()).addToBackStack("EEDF2")
+                //        .commit();
+                //_recordID = 0;
+                //if (fabButtonClicked) { // if this is a real click i.e not an edit
+                    long lastInserted = InsertNewEvent.main();
+                    //InsertNewEvent.main();
+                //    _recordID =
+                //}
+                //fabButtonClicked = true; // should only be false on a simulated click;
+                //Log.d(DEBUG_TAG, ">>>" + fabButtonClicked);
+                Intent intent = new Intent(getContext(), EventCounterFragment.class);
+                intent.putExtra("ROW_INDEX", HSFrag.eventRecord.size() - 1); // Start viewpager at this record
+                intent.putExtra("MODE", "N"); // N=New
+                intent.putExtra("LASTADDED", (int) lastInserted);
+                getContext().startActivity(intent);
+
             }
         });
 
@@ -179,6 +203,8 @@ public class HSFrag extends Fragment {
                 //update paused column if countdown has expired or countup has not started yet
 
                 //if(eventRecord.get(i).get_paused() == 0) {
+
+                /* commenting this out on 14/9/16 becase i've no idea what it's doing
                 long currentTime = System.currentTimeMillis() / 1000;
                 if ((eventRecord.get(i).get_direction() == 1 && (eventRecord.get(i).get_evtime() < currentTime)) ||
                         (eventRecord.get(i).get_direction() == 0 && (eventRecord.get(i).get_evtime() > currentTime))) {
@@ -188,6 +214,7 @@ public class HSFrag extends Fragment {
                     eventRecord.remove(i);
                     eventRecord.add(myEvent);
                 }
+                */
                 //}
 
             }
@@ -227,16 +254,17 @@ public class HSFrag extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        setup_list();
+        setup_list(); // required after dialogfragment closes ?????? possibly
+        //Log.d(DEBUG_TAG, "setting _recid to 0");
+        //_recordID = 0;
 
     }
 
-    public void simulateFabClick(FloatingActionButton myfab) {
-        //Toast.makeText(activity, "This is it!", Toast.LENGTH_SHORT).show();
-        myfab.performClick();
+    //public void simulateFabClick(FloatingActionButton myfab, int recid) {
+    //    //Toast.makeText(activity, "This is it!", Toast.LENGTH_SHORT).show();
+    //    _recordID = recid;
+
+    //    myfab.performClick();
         //onResume();
-    }
-
-
-
+    //}
 }

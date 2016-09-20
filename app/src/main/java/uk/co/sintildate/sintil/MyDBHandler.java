@@ -71,7 +71,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     //Add a new row to the database
-    public void addEvent(Events event) {
+    public long addEvent(Events event) {
         //System.out.println("!!- 3");
         ContentValues values = new ContentValues();
         values.put(COLUMN_EVENT_NAME, event.get_eventname());
@@ -88,8 +88,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_EVENT_BGCOLOR, event.get_bgcolor());
         // add code here for new fields
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(TABLE_EVENTS, null, values);
+        long lastInserted = db.insert(TABLE_EVENTS, null, values);
         db.close();
+
+        return lastInserted;
 
     }
 

@@ -66,5 +66,8 @@
     <string name="date_error1">Cannot count down to a past date</string>
     <string name="title_error1">Please enter the event title</string>
 
+    <string name="count_up">Count up</string>
+    <string name="count_down">Count down</string>
+
 
 </resources>

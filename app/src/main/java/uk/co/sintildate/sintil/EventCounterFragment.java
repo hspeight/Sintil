@@ -1,26 +1,43 @@
 package uk.co.sintildate.sintil;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+//import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.Transformation;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +50,10 @@ public class EventCounterFragment extends FragmentActivity {
     String DEBUG_TAG = "ECF";
     public static Events[] eventArray;
     private int mTime;
-    private int mDirection;
+    private int mDirection, lastAdded;
     boolean ok_to_start, timer_has_started;
+    private int PICK_IMAGE_REQUEST = 1;
+    String counterMode;
     Resources res;
    // long currentTime;
     TextView textSecs;
@@ -42,7 +61,9 @@ public class EventCounterFragment extends FragmentActivity {
     TextView textHour;
     TextView textDays;
     TextView textYears;
-    LinearLayout linLayTimer_counter, linLay;
+    EditText mTitle, mSubTitle;
+    ImageView imageViewPic;
+    LinearLayout linLayTimer_counter, linLay, linLayTimer_Units;
     CountDownTimer cdt;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +90,8 @@ public class EventCounterFragment extends FragmentActivity {
         if (args != null) {
             //index = args.getInt(ARG_OBJECT);
             index = args.getInt("ROW_INDEX");
+            counterMode = args.getString("MODE");
+            lastAdded = args.getInt("LASTADDED", 0);
         }
 
         dbHandler = new MyDBHandler(this, null, null, 1);
@@ -115,8 +138,7 @@ public class EventCounterFragment extends FragmentActivity {
                     if (findViewById(R.id.textSecs) == null) {
                         // this can happen when a countup time is reached whilst the counter is on screen
                         Log.d(DEBUG_TAG,"secs index is " + findViewById(R.id.textSecs));
-                        LinearLayout linLayTimer_Temp = (LinearLayout) findViewById(R.id.linLayoutTemp);
-                        linLayTimer_Temp.removeAllViews();
+                        linLayTimer_Units.removeAllViews();
                         LayoutInflater inflater =(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View myView = inflater.inflate(R.layout.content_timer_counter, null);
                         //myView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -124,7 +146,7 @@ public class EventCounterFragment extends FragmentActivity {
                         myView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
                         //lp.weight = 0.1f;
                         //myView.setLayoutParams(lp);
-                        linLayTimer_Temp.addView(myView);
+                        linLayTimer_Units.addView(myView);
                         textSecs = (TextView) findViewById(R.id.textSecs);
                         textDays = (TextView) findViewById(R.id.textDays);
                         textYears = (TextView) findViewById(R.id.textYears);
@@ -152,14 +174,26 @@ public class EventCounterFragment extends FragmentActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (timer_has_started)
+        //Log.d(DEBUG_TAG,"timer_has_started=" + timer_has_started);
+        if (timer_has_started) {
             cdt.cancel();
+            if(counterMode.equals("N") || counterMode.equals("E")) { // New or Edit
+                Log.d(DEBUG_TAG,index + "");
+                Events myEvent = dbHandler.getMyEvent(lastAdded);
+                myEvent.set_eventname(mTitle.getText().toString());
+                myEvent.set_eventinfo(mSubTitle.getText().toString());
+                myEvent.set_bgimage("file:///storage/emulated/0/Download/2013-04-06%2013.38.53.jpg");
+                dbHandler.updateEvent(myEvent);
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // start ticker
+        //Log.d(DEBUG_TAG,"onresume timer_has_started=" + timer_has_started);
+
+        //start_timer();
     }
 
     public void DispNextPage(View v) {
@@ -169,6 +203,7 @@ public class EventCounterFragment extends FragmentActivity {
         if (index < HSFrag.eventRecord.size() -1) {
             index++;
             //Log.d(DEBUG_TAG,"index before setup=" + index);
+            //cdt.cancel();
             setup_counter(index);
         }
 
@@ -185,19 +220,64 @@ public class EventCounterFragment extends FragmentActivity {
     public void setup_counter(int index) {
         //Log.d(DEBUG_TAG,"index+++++++++++++++++++++++++=" + index);
         linLay.setBackgroundColor(HSFrag.eventRecord.get(index).get_bgcolor());
-        if (timer_has_started)
+        if (timer_has_started) {
+            //Log.d(DEBUG_TAG,"cancelling cdt");
             cdt.cancel();
+        }
         timer_has_started = false;
         mTime = HSFrag.eventRecord.get(index).get_evtime();
         mDirection = HSFrag.eventRecord.get(index).get_direction();
-        //mDirection = HSFrag.eventRecord.get(index).get_direction();
+        imageViewPic = (ImageView) findViewById(R.id.imageViewPic);
+        linLayTimer_Units = (LinearLayout) findViewById(R.id.linLayoutUnits);
         //mUsedayyear = HSFrag.eventRecord.get(index).get_dayyears();
         //final long timeDiff = (System.currentTimeMillis() / 1000) - mTime;
 
         //if ((timeDiff < 0) && (mDirection == 0)) { // Count up starting in future
         //    ((TextView) rootView.findViewById(R.id.textViewFuture)).setText(sdf.format((long) mTime * 1000));
-        ((TextView) findViewById(R.id.textEvTitle)).setText(HSFrag.eventRecord.get(index).get_eventname());
-        ((TextView) findViewById(R.id.textOptionalInfo)).setText(HSFrag.eventRecord.get(index).get_eventinfo());
+        mTitle = ((EditText) findViewById(R.id.textEvTitle));
+        mSubTitle = ((EditText) findViewById(R.id.textOptionalInfo));
+        mTitle.setText(HSFrag.eventRecord.get(index).get_eventname());
+        mSubTitle.setText(HSFrag.eventRecord.get(index).get_eventinfo());
+        //((TextView) findViewById(R.id.textOptionalInfo)).setText(HSFrag.eventRecord.get(index).get_eventinfo());
+        //Log.d(DEBUG_TAG,"newevent is " + newevent);
+        //mTitle.setEnabled(false);
+
+        if(counterMode.equals("N") || counterMode.equals("E")) { // New or Edit
+            // Ah ha new record from fab button
+            mTitle.selectAll();
+            mTitle.setEnabled(true); // only for newly added events
+            mTitle.requestFocus();
+            mTitle.setSelectAllOnFocus(true);
+            //Log.d(DEBUG_TAG,"am i here?");
+            mSubTitle.setEnabled(true); // only for newly added events
+            mSubTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(hasFocus){
+                        mSubTitle.selectAll();
+                    }
+                }
+            });
+            imageViewPic.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View view) {
+                    //Toast.makeText(EventCounterFragment.this, "Image pressed.. yippee", Toast.LENGTH_SHORT).show();
+                    //cdt.cancel();
+                    launch_chooser();
+                    //start_timer(); // timer will have been stopped by image choser activity
+                }});
+            linLayTimer_Units.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View view) {
+                    //Toast.makeText(EventCounterFragment.this, "thingy pressed.. yippee", Toast.LENGTH_SHORT).show();
+                    FragmentManager fm = getSupportFragmentManager();
+                    DateTimeDialogFragment overlay = new DateTimeDialogFragment();
+                    overlay.show(fm, "FragmentDialog");
+                }});
+        } else {
+            mTitle.setInputType(0); // make the edittext non editable
+            mSubTitle.setInputType(0); // make the edittext non editable
+
+        }
+
         final long currentTime = System.currentTimeMillis() / 1000;
         //final int timeDiff = (int) currentTime - mTime;
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", java.util.Locale.getDefault());
@@ -209,6 +289,15 @@ public class EventCounterFragment extends FragmentActivity {
         textMins = (TextView) findViewById(R.id.textMins);
         textHour = (TextView) findViewById(R.id.textHour);
         linLayTimer_counter = (LinearLayout) findViewById(R.id.linLayoutTimer);
+
+        if(counterMode.equals("N")) {
+            // new event so disable prev & next buttons
+            ImageButton pgLeft = (ImageButton) findViewById(R.id.pageLeftImgBtn);
+            ImageButton pgRight = (ImageButton) findViewById(R.id.pageRightImgBtn);
+            pgRight.setVisibility(View.INVISIBLE);
+            pgLeft.setVisibility(View.INVISIBLE);
+        }
+
         ok_to_start = true;
         //if(HSFrag.eventRecord.get(index).get_paused() == 1) {
         if ((HSFrag.eventRecord.get(index).get_direction() == 1 && (HSFrag.eventRecord.get(index).get_evtime() < currentTime)) ||
@@ -240,15 +329,81 @@ public class EventCounterFragment extends FragmentActivity {
                 .oval(false)
                 .build();
 */
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        Picasso.with(this)
-                .load(R.drawable.bass)
-                //.transform(transformation)
-                .into(imageView);
+        //Picasso.with(this)
+        String evimage = HSFrag.eventRecord.get(index).get_bgimage();
+        Uri uri = null;
+        Log.d(DEBUG_TAG,"evimage is " + evimage);
+        if (evimage != null)
+            uri = Uri.parse(new File(evimage).toString());
+
+        Glide.with(this)
+                .load(uri)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                //.error(R.drawable.daftlogo2) // probably better than a placeholder
+                //.dontAnimate()
+                .into(this.imageViewPic);
 
         if (ok_to_start) {
+            //Log.d(DEBUG_TAG,"oktostart timer_has_started=" + timer_has_started);
+
             start_timer();
         }
 
     }
+    public void launch_chooser() {
+
+        Intent intent = new Intent();
+        // Show only images, no videos or anything else... hmmm maybe vids one day
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        // Always show the chooser (if there are multiple options available)
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        setup_counter(index);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+
+            //Picasso.with(this).setLoggingEnabled(true);
+            //try {
+                //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                //Log.d(DEBUG_TAG, ">>" + String.valueOf(uri) + "<<");
+                //Picasso.with(this)
+                Glide.with(this)
+                        .load(uri)
+                        //.centerInside()
+                        //.fit()
+                        .into(imageViewPic);
+                //ImageView imageView = (ImageView) findViewById(R.id.imageViewPic);
+                //imageView.setImageBitmap(bitmap);
+            //} catch (IOException e) {
+            //    e.printStackTrace();
+            //}
+        }
+
+    }
+    private class DownloadTileToCacheTask extends AsyncTask<String, Void, File> {
+        @Override
+        protected File doInBackground(String... params) {
+            FutureTarget<File> future = Glide.with(getApplicationContext())
+                    .load(params[0])
+                    .downloadOnly(256, 256);
+
+            File file = null;
+            try {
+                file = future.get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return file;
+        }
+    }
+
 }

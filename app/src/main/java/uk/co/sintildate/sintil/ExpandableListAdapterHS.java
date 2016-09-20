@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import com.melnykov.fab.FloatingActionButton;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -103,15 +103,20 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 //Log.d(DEBUG_TAG,"grouppos is " + groupPosition);
-                int recordID = HSFrag.eventRecord.get(groupPosition).get_id();
-                HSFrag hsFrag = new HSFrag();
-                //Activity activity = (Activity) _context;
-                hsFrag.simulateFabClick(_fab);
+                //int recordID = HSFrag.eventRecord.get(groupPosition).get_id();
+                //HSFrag hsFrag = new HSFrag();
+                //pass fab buttonID & recordID back to method in HSFRAG
+                //hsFrag.simulateFabClick(_fab, HSFrag.eventRecord.get(groupPosition).get_id());
 
                 //Activity activity = (Activity) _context;
                 //FragmentManager fm = getActivity().getSupportFragmentManager();
-                //NewEventDialogFragment newEventDialogFragment = new NewEventDialogFragment();
+                //EventEditorDialogFragment newEventDialogFragment = new EventEditorDialogFragment();
                 //newEventDialogFragment.show(fm, "fragment_new_event");
+                Intent intent = new Intent(_context, EventCounterFragment.class);
+                intent.putExtra("ROW_INDEX",groupPosition); // Start viewpager at this record
+                intent.putExtra("MODE", "E"); // E=Edit
+                intent.putExtra("LASTADDED", HSFrag.eventRecord.get(groupPosition).get_id());
+                _context.startActivity(intent);
             }
         });
 
@@ -123,6 +128,7 @@ public class ExpandableListAdapterHS extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(_context, EventCounterFragment.class);
                 intent.putExtra("ROW_INDEX",groupPosition); // Start viewpager at this record
+                intent.putExtra("MODE", "P"); // P=Play
                 _context.startActivity(intent);
             }
         });

@@ -2,6 +2,8 @@ adb -s emulator-5554 shell
 
 sqlite3 /data/data/uk.co.sintildate.sintil/databases/events.db "select * from events"
 sqlite3 /data/data/uk.co.sintildate.sintil/databases/events.db "select * from events where evstatus = 'A'"
+sqlite3 /data/data/uk.co.sintildate.sintil/databases/events.db "select count (*) from events where evstatus = 'A'"
+
 
 
 sqlite3 /data/data/uk.co.sintildate.sintil/databases/events.db "PRAGMA table_info(events);"

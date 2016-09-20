@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-//public class MainActivity extends AppCompatActivity implements NewEventDialogFragment.onNewEventAdded {
+//public class MainActivity extends AppCompatActivity implements EventEditorDialogFragment.onNewEventAdded {
 
     private DrawerLayout mDrawerLayout;
     public String DEBUG_TAG = "MAC";

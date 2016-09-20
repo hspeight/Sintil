@@ -14,12 +14,13 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center_horizontal|left"
+        android:layout_gravity="center_horizontal|start"
         android:id="@+id/linLayoutCouterTitle"
         android:layout_weight=".2"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        >
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
@@ -30,9 +31,10 @@
             android:scrollHorizontally="true"
             android:maxLines="2"
             android:gravity="center_horizontal"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:background="@android:color/transparent"
+            android:inputType="text" />
     </LinearLayout>
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -42,18 +44,19 @@
         android:layout_marginTop="5dp"
         android:gravity="center_vertical|center_horizontal">
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:text="Med Text"
             android:id="@+id/textOptionalInfo"
-
             android:gravity="center_vertical|center_horizontal"
 
             android:textStyle="bold|italic"
             android:scrollHorizontally="true"
             android:maxLines="3"
+            android:background="@android:color/transparent"
+
             android:ellipsize="end" />
     </LinearLayout>
 
@@ -75,14 +78,12 @@
             android:onClick="DispPrevPage" />
         <com.makeramen.roundedimageview.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/imageView"
+            android:id="@+id/imageViewPic"
             app:riv_corner_radius="30dip"
-
             app:riv_oval="false"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".7"
-            android:padding="10dp" />
+            android:layout_height="match_parent"
+            android:layout_weight=".7" />
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -99,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".3"
-        android:id="@+id/linLayoutTemp">
+        android:id="@+id/linLayoutUnits">
         <include layout="@layout/content_timer_counter"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

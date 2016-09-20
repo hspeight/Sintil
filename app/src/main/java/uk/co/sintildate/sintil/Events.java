@@ -111,6 +111,9 @@ public class Events {
     public void set_evtype(String _evtype) {
         this._evtype = _evtype;
     }
+    public void set_bgimage(String _bgimage) {
+        this._bgimage = _bgimage;
+    }
     public void set_evstatus(String _evstatus) {
         this._evstatus = _evstatus;
     }
